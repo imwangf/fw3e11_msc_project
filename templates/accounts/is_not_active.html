@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block meta %}
+<meta http-equiv="refresh" content="5; url=../">
+{% endblock %}
+
+{% block css %}
+<style>
+    p {
+        font-size: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>User status is "not active"!</h1>
+<p>Please contact admin to active your account.</p>
+{% endblock %}
+

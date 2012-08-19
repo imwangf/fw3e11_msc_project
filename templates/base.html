@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>{% block title %}Wikiforum{% endblock %}</title>
+        <style type="text/css">
+            * {
+                padding: 0;
+                margin: 0;
+            }
+            h1 {
+                padding: 10px;
+            }
+            body {
+                width: 100%;
+                max-width: 1280px;
+                padding: 0 20px;
+            }
+            #content {
+                min-height: 300px;
+            }
+            #footer {
+                border-top: 1px solid #ccc;
+                margin-top: 20px;
+                /*background: red;*/
+            }
+            span.search_text {
+                color: #f00;
+                font-style: italic;
+            }
+            span.page_name {
+                font-style: italic;
+            }
+            #navigator {
+                /*background: red;*/
+            }
+            #navigator, #footer {
+                width: 96%;
+                padding: 10px 0;
+            }
+            #footer span, #navigator span {
+                float: right;
+                /*margin-right: 40px;*/
+            }
+            .clear {
+                clear: both;
+            }
+        </style>
+        {% block css %}{% endblock %}
+        {% block js %}{% endblock %}
+        {% block meta %}{% endblock %}
+    </head>
+    <body>
+        <div id="navigator">
+            <a href="/">HomePage</a> |
+            <a href="/wikiforum/search/">SearchPage</a> |
+            <a href="/accounts/users/">Find Users</a>
+            <span>
+                {% if user.is_authenticated %}
+                Welcome, {{ user }}. <a href="/accounts/logout/">logout</a> or <a href="/accounts/change_password/">Change password</a>
+                {% else %}
+                Welcome, guest.
+                <a href="/accounts/login/">login</a> or <a href="/accounts/register">register</a>
+                {% endif %}
+            </span>
+        </div>
+        <h1>{% block h1 %}{% endblock %}</h1>
+
+        <div id="content">
+            {% block content %}
+            <p>This is content -- base.html</p>
+            {% endblock %}
+        </div>
+        {% block footer %}
+        <div class="clear"></div>
+        <div id="footer">
+            By Feng Wang
+            <span><a href="../">Back</a></span>
+        </div>
+        {% endblock %}
+    </body>
+</html>

@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style type="text/css">
+    li {
+        width: 98%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        padding: 2px;
+    }
+    
+    ul {
+        margin: 5px 0px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}Posts tagged with {{ tag_name }}{% endblock %}
+
+{% block h1 %}Post tagged with <span class="search_text">{{ tag_name }}</span>{% endblock %}
+
+{% block content %}
+<ul>
+    {% for post in posts %}
+    <li><a href="/wikiforum/posts/{{ post.id }}/">{{ post.title }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock %}

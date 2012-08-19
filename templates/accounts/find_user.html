@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+            var searchForm = $("#find_user");
+            var searchText = $("#search_text");
+            searchText.keyup(function () {
+                searchForm.attr('action', searchText.val() + "/");
+            }); 
+    })
+</script>
+{% endblock %}
+
+{% block css %}
+<style type="text/css">
+    form {
+        margin: -1 auto;
+        padding: 10px 3px;
+    }
+    form #search_text {
+        height: 20px;
+        width: 250px;
+        font-size: 16px;
+        padding: 5px 2px;
+    }
+    #submit {
+        vertical-align: bottom;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        padding: 2px 10px;
+    }
+    #submit:hover {
+        vertical-align: middle;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 2px 10px;
+    }
+</style>
+{% endblock %}
+
+
+{% block title %}Find User{% endblock %}
+
+{% block h1 %}Input <em>exact</em> username{% endblock %}
+
+{% block content %}
+<div>
+    <form id="find_user" method="post" action="" label="">
+        {% csrf_token %}
+        <label>&nbsp;</label>
+        <input type="text" id="search_text" name="search" rows="1" cols="15"></input>
+        <input type="submit" id="submit" value="Find" />
+    </form>
+</div>
+{% endblock %}
+

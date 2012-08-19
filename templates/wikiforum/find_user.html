@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block js %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<script type="text/javascript">
+    $(function () {
+            var searchForm = $("#find_user");
+            var searchText = $("#search_text");
+            searchText.keyup(function () {
+                searchForm.attr('action', searchText.val() + "/");
+            }); 
+    })
+</script>
+{% endblock %}
+
+{% block title %}Find User{% endblock %}
+
+{% block h1 %}Find users{% endblock %}
+
+{% block content %}
+<div>
+    <form id="find_user" method="post" action="">
+        {% csrf_token %}
+        &nbsp;<input type="text" id="search_text" name="search" rows="1" cols="15"></input>
+        <input type="submit" value="Find" />
+    </form>
+{% endblock %}
+

@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Error{% endblock %}
+
+{% block meta %}
+<meta http-equiv="refresh" content="5">
+{% endblock %}
+
+{% block css %}
+<style>
+    p {
+        font-size: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>Username and Password Do Not Match</h1>
+<p>this page will be redirect to login in 5 seconds.</p>
+{% endblock %}

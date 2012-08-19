@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% block css %}{% endblock %}
+
+{% block title %}{{ usr.username }}{% endblock %}
+
+{% block h1 %}{{ usr.username }}'s posts{% endblock %}
+
+{% block content %}
+{% if posts %}
+Original creation:
+<ul>
+    {% for post in posts %}
+    <li><a href="/wikiforum/posts/{{ post.pk }}/">{{ post.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+Modifying history:
+<ul>
+    {% for history in history_records %}
+    <li><a href="/wikiforum/posts/{{ history.post_id }}/">{{ history }}</a>
+    </li>
+    {% endfor %}
+</ul>
+
+{% else %}
+This user have no posts.
+{% endif %}
+{% endblock %}

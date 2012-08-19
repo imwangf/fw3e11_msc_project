@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block css %}
+<style type="text/css">
+    input.t {
+        height: 20px;
+        width: 250px;
+        font-size: 16px;
+        padding: 3px 2px;
+        margin: 10px;
+    }
+    textarea {
+        padding: 3px 2px;
+        font-size: 15px;
+    }
+    .button {
+        vertical-align: middle;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        padding: 2px 10px;
+    }
+    .button:hover {
+        vertical-align: middle;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 2px 10px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}
+Reply: {{ post.title }}
+{% endblock %}
+
+{% block content %}
+<form method="post" action="/wikiforum/posts/{{ new_post.pk }}/save/">
+    {% csrf_token %}
+    Title: <input name="title" class="t" value={{ title }} >
+    <br />
+    <textarea name="body" rows="20" cols="60">{{ body }}</textarea>
+    <br />
+    Tags: <input name="tags" class="t" value={{ tags }} >
+    <input type="submit" class="button" value="Reply" />
+</form>
+{% endblock %}

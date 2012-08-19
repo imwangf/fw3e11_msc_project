@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Search Page{% endblock %}
+
+{% block css %}
+<style type="text/css">
+    form {
+        padding: 0px 0px 10px 0px;
+    }
+    table {
+        margin: -1 auto;
+        padding: 10px 3px 3px 3px;
+    }
+    table th {
+        display: none;
+        /*visibility: hidden;*/
+    }
+    table input {
+        height: 20px;
+        width: 450px;
+        font-size: 16px;
+        padding: 5px 2px;
+    }
+    table .errorlist {
+        list-style-type: none;
+        float: right;
+        padding: 8px 0px 0px 8px;
+    }
+    #submit {
+        vertical-align: middle;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        padding: 2px 10px;
+    }
+    #submit:hover {
+        vertical-align: middle;
+        background: none;
+        border: none;
+        size: 20px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        padding: 2px 10px;
+    }
+    h2 {
+        padding: 0px;
+    }
+    div .result-list {
+        padding: 0px 0px 0px 10px;
+    }
+    tr {
+        padding: 3px;
+    }
+    td {
+        list-style-type: none;
+        padding: 2px 4px;
+    }
+    td.post_title:hover {
+        border: 0 dotted #c0c0c0;
+    }
+
+</style>
+{% endblock %}
+{% block h1 %}Search{% endblock %}
+
+{% block content %}
+
+<form method="post" action="">
+    {% csrf_token %}
+    <table>
+        {{ form }}
+    </table>
+    <label>&nbsp;</label>
+    <input id="submit" type="submit" value="Search" />
+</form>
+
+{% if search_text %}
+<h2>Search result for <span class="search_text">{{ search_text }}</span></h2>
+<div class="search-list">
+    {% if title_result %}
+    <h3>Search title:</h3>
+    <table class="search_result">
+        {% for result in title_result %}
+        <tr>
+            <td class="post_title"><a href="/wikiforum/posts/{{ result.pk }}/">{{ result.title}}</a></td>
+            <td class="post_modified">{{ result.modified }}</td>
+            <td class="post_modified_by"><a href="/accounts/users/{{ result.modified_by.username }}">{{ result.modified_by.username }}</a></td>
+        </td>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+<div class="search-list">
+    {% if body_result %}
+    <h3>Search body content:</h3>
+    <table class="search_result">
+        {% for result in body_result %}
+        <tr>
+            <td class="post_title"><a href="/wikiforum/posts/{{ result.pk }}/">{{ result.title}}</a></td>
+            <td class="post_modified">{{ result.modified }}</td>
+            <td class="post_modified_by"><a href="/accounts/users/{{ result.modified_by.username }}">{{ result.modified_by.username }}</a></td>
+        </td>
+        {% endfor %}
+    </table>
+    {% endif %}
+</div>
+<div class="search-list">
+    {% if not title_result and not body_result %}
+    No result found. <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New Post</a>
+    {% else %}
+    <br />
+    All above are not what you want? &nbsp;<a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New Post</a>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}

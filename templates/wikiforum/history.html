@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block css %}
+<style type="text/css">
+    li {
+        width: 98%;
+        overflow-x: hidden;
+        overflow-y: scroll;
+        padding: 2px;
+    }
+    
+    ul {
+        margin: 5px 5px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}History for "{{ post_obj.title }}"{% endblock %}
+
+{% block h1 %}History for "{{ post_obj.title }}"{% endblock %}
+
+{% block content %}
+{% if history_list %}
+<ul>
+    {% for history in history_list %}
+    <li>{{ history }} -- {{ history.modified }} -- {{ history.modified_by }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+No history record! &nbsp;
+<a href="../">BACK TO EDIT</a>
+{% endif %}
+{% endblock %}

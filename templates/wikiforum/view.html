@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block js %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('li').hover(function(){
+                $(this).css("background", "#c0c0c0");
+            }, function(){
+                $(this).css("background", "white")
+            });
+    });
+</script>
+{% endblock %}
+
+{% block css %}
+<style>
+    div.left {
+        float: left;
+        width: 620px;
+    }
+#current-post {
+    width: 300px;
+    border: 1px solid #ccc;
+    padding: 0 20px;
+    float:right;
+
+}
+#current-post span.edit {
+    float: right;
+    margin-top: 10px;
+}
+#current-post span.edit a {
+    margin-left: 5px;
+}
+#current-post h2 {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    overflow: hidden;
+    margin-top: 5px;
+}
+#current-post h2 span {
+    width: 90%;
+    font-size: 18px;
+    font-style: italic;
+}
+#current-post article {
+    height: 200px;
+    overflow: auto;
+    margin-top: 5px;
+}
+#current-post .tag {
+    width: 100%;
+    padding: 5px 0px;
+    border-top: 1px dashed #ccc;
+    border-bottom: 1px dashed #ccc;
+}
+
+#pre-post {
+    float: right;
+    margin-right: 20px;
+    border: 1px solid #ccc;
+    padding: 0 10px;
+}
+#pre-post h3 {
+    width: 100%;
+    text-align: center;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed #ccc;
+    overflow: auto;
+    margin-top: 5px;
+}
+#pre-post article {
+    height: 200px;
+    overflow: auto;
+    margin-top: 5px;
+}
+
+#next-post h4 {
+    width: 100%;
+    overflow: hidden;
+}
+#next-post {
+    float: left;
+    margin-left: 0px;
+    padding-left: 100px;
+}
+#pre-post, #next-post {
+    width: 200px;
+    /*background: yellow;*/
+}
+
+div#content {
+    width: 1280px;
+}
+
+#next-post li {
+    width: 98%;
+    border: 2px solid #c0c0c0;
+    list-style-type: none;
+    margin: 16px 0px;
+    padding: 3px;
+    /*overflow-x: hidden;
+    overflow-y: scroll;*/
+    
+}
+#next-post ul {
+    margin: 5px 0px;
+}
+
+/**************************/
+#next-post ul li {
+    position: relative;
+}
+#next-post ul li .line {
+    position: absolute;
+    top: 5px;
+    left: -102px;
+    width: 102px;
+    border-top: 1px solid #c0c0c0;
+    display: block;
+}
+</style>
+{% endblock %}
+{% block content %}
+<div id="content">
+<div class="left">
+    <section id="current-post">
+    <h2>{{ post.title }}&nbsp;<span>by <a href="/accounts/users/{{ post.modified_by.username }}/">{{ post.modified_by.username }}</a></span></h2>
+    <article>{{ body }}</article>
+    <br />
+    <p class="tag">Tag: 
+        {% if not tags %}None{% else %}
+            {% for tag in tags %}
+                <a href="/wikiforum/tags/{{ tag.name }}/">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        {% endif %}
+    </p>
+    <span class="edit"><a href="/wikiforum/posts/{{ post.pk }}/edit/">Edit this post?</a>&nbsp;<a href="reply/">Add reply</a>&nbsp;or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New post</a></span>
+    </section>
+    
+    <section id="pre-post">
+    {% if not related_pre_post %}<h3>None</h3>
+    {% else %}
+    <h3>Related pre-post: <a href="/wikiforum/posts/{{ related_pre_post.pk }}/">{{ related_pre_post.title }}</a></h3>
+    <article>{{ body }}</article>
+    {% endif %}
+    </section>
+</div>
+
+<section id="next-post">
+<h3>Related next-post:</h3>
+{% if not related_next_posts %}<h4>None</h4>{% endif %}
+<ul>
+    {% for related_next_post in related_next_posts %}
+    <li><span class="line"></span>
+    <h4>
+        <a href="/wikiforum/posts/{{ related_next_post.pk }}/">{{ related_next_post.title }}</a>
+    </h4>
+    </li>
+{% endfor %}
+</ul>
+</section>
+</div>
+{% endblock %}
+
+{% block footer %}
+<div class="clear"></div>
+<div id="footer">
+    By Feng Wang
+    <span><a href="../../../">Back</a></span>
+</div>
+{% endblock %}

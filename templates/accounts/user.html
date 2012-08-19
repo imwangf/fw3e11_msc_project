@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block css %}
+<style type="text/css">
+    div .result-list {
+        padding: 10px;
+    }
+    ul {
+        padding: 3px;
+    }
+    li {
+        list-style-type: none;
+        padding: 2px;
+    }
+</style>
+{% endblock %}
+
+{% block title %}{{ usr.username }}{% endblock %}
+
+{% block h1 %}{{ usr.username }}'s posts{% endblock %}
+
+{% block content %}
+<div class="result-list">
+{% if posts %}
+Original creation:
+{% if posts %}
+<ul>
+    {% for post in posts %}
+    <li><a href="/wikiforum/posts/{{ post.pk }}/">{{ post.title }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<br/>None
+{% endif %}
+</div>
+<div class="result-list">
+Modifying history:
+{% if history_records %}
+<ul>
+    {% for history in history_records %}
+    <li><a href="/wikiforum/posts/{{ history.post_id }}/">{{ history }}</a>
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<br/>None
+{% endif %}
+</div>
+{% else %}
+This user have no posts.
+{% endif %}
+{% endblock %}
