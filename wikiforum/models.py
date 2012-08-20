@@ -20,7 +20,7 @@ class Post (models.Model):
     #next_posts = models.ForeignKey ('self', blank = True, null = True, related_name = '+')
 
     def __unicode__ (self):
-        return self.pk
+        return self.title
 
 class Tag (models.Model):
     name = models.CharField (max_length = 200, primary_key = True)
