@@ -72,7 +72,7 @@ def login_view (request):
                         return HttpResponseRedirect ("/")
                 else:
                     # Return a 'disabled account' error message
-                    return render_to_response ("accounts/is_not_active.html")
+                    return render_to_response ("accounts/is_not_activated.html")
             else:
                 # Return an 'invalid login' error message.
                 return render_to_response ("accounts/login_error.html")

@@ -108,7 +108,8 @@
 </div>
 <div class="search-list">
     {% if not title_result and not body_result %}
-    No result found. <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New Post</a>
+    <br />
+    <p>No result found. <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New Post</a></p>
     {% else %}
     <br />
     All above are not what you want? &nbsp;<a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New Post</a>

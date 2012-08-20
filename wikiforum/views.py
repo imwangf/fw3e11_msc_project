@@ -40,7 +40,7 @@ def search (request):
         else:
             search_text = form.cleaned_data ['search_text']
             title_result = Post.objects.filter (title__icontains = search_text)
-            print type(title_result)
+            # print type(title_result)
             body_result = Post.objects.filter (body__icontains = search_text)
             new_post = Post (pk = new_pk ())
             return render_to_response ("wikiforum/search.html", locals (), context_instance = RequestContext (request))
@@ -120,16 +120,20 @@ def post_save (request, post_id):
                     body = "",
                     forum = forum [0],
                     modified_by = u)
-        # endif
-        for tag in tag_list:
-            post.tags.add (tag)
+        # if
         if not title == "":
             post.title = title
         post.body = body
         if post.body == "":
             return HttpResponse ("Body can't be null.")
         post.save ()
-        del request.session ['pre_post']        
+        # deal tags
+        for tag in tag_list:
+            post.tags.add (tag)
+        try:
+            del request.session ['pre_post']        
+        except:
+            pass
     try:
         post_obj = Post.objects.get (pk = post_id)
         History.objects.create (post = post_obj, body = post.body, modified_by = u)
@@ -154,17 +158,14 @@ def post_view (request, post_id):
         ###############################
         if Post.objects.filter (pre_post_id = post.pk):
             related_next_posts = [p for p in Post.objects.filter (pre_post_id = post.pk)]
-            for post in related_next_posts:
-                if post.body == "":
-                    post.delete ()
-                    HttpResponseRedirect (".")
 
         try:
             Post.objects.get (pk = post.pre_post_id)
             related_pre_post = Post.objects.get (pk = post.pre_post_id)
-            print "pre: " + related_pre_post.title
+            # print "pre: " + related_pre_post.title
         except Post.DoesNotExist:
-            print "pre: None"
+            # print "pre: None"
+            pass
         # pre_post is unique ####################
         return render_to_response ("wikiforum/view.html", locals (), context_instance = RequestContext (request))
     except Post.DoesNotExist:
