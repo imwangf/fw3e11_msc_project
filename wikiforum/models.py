@@ -13,6 +13,7 @@ class Post (models.Model):
     forum = models.ForeignKey (Forum)
     title = models.CharField (max_length = 200)
     body = models.TextField ()
+    body_html = models.TextField ()
     tags = models.ManyToManyField ('Tag')
     modified = models.DateTimeField ('Modified', auto_now_add = True)
     modified_by = models.ForeignKey (User)

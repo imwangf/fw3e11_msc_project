@@ -131,7 +131,7 @@ div#content {
 <div class="left">
     <section id="current-post">
     <h2>{{ post.title }}&nbsp;<span>by <a href="/accounts/users/{{ post.modified_by.username }}/">{{ post.modified_by.username }}</a></span></h2>
-    <article>{{ body }}</article>
+    <article>{{ body_html|safe }}</article>
     <br />
     <p class="tag">Tag: 
         {% if not tags %}None{% else %}
@@ -147,7 +147,7 @@ div#content {
     {% if not related_pre_post %}<h3>None</h3>
     {% else %}
     <h3>Related pre-post: <a href="/wikiforum/posts/{{ related_pre_post.pk }}/">{{ related_pre_post.title }}</a></h3>
-    <article>{{ body }}</article>
+    <article>{{ body_html|safe }}</article>
     {% endif %}
     </section>
 </div>

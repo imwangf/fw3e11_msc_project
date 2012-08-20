@@ -55,11 +55,13 @@ def post_edit (request, post_id):
         post = Post.objects.get (pk = post_id)
         title = post.title
         body = post.body
+        body_html = post.body_html
         tags = " ".join ([tag.name for tag in post.tags.all ()])
     # New Post
     except Post.DoesNotExist:
         title = ""
         body = ""
+        body_html = ""
         tags = ""
     return render_to_response ("wikiforum/edit.html", locals (), context_instance = RequestContext (request))
 
@@ -72,6 +74,7 @@ def post_reply (request, post_id):
             forum = forum [0],
             title = "re: " + post.title,
             body = "",
+            body_html = "",
             modified_by = u,
             pre_post = post)
     request.session ['pre_post'] = post.pk
@@ -103,7 +106,15 @@ def post_save (request, post_id):
         # body
         if post.body == body:
             return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
-        else: post.body = body
+        body_html = body.replace("\r\n", "<br/>")
+        body_html = body.replace("\n", "<br/>")
+        body_html = body.replace("\r", "<br/>")
+
+        post.body = body
+        post.body_html = body_html
+        # textarea
+        #re.sub("\r", "<br/>", post.body)
+                # ########
         post.save ()
     # Post New Case
     except Post.DoesNotExist:
@@ -112,20 +123,29 @@ def post_save (request, post_id):
             pre_post = Post.objects.get (pk = request.session ['pre_post'])
             post = Post (title = "re: " + pre_post.title,
                     body = "",
+                    body_html = "",
                     forum = forum [0],
                     modified_by = u,
                     pre_post = pre_post)
         except KeyError:
             post = Post (title = "New post",
                     body = "",
+                    body_html = "",
                     forum = forum [0],
                     modified_by = u)
         # if
         if not title == "":
             post.title = title
-        post.body = body
-        if post.body == "":
+        if body == "":
             return HttpResponse ("Body can't be null.")
+        # textarea
+        body_html = body.replace("\r\n", "<br/>")
+        body_html = body.replace("\n", "<br/>")
+        body_html = body.replace("\r", "<br/>")
+
+        post.body = body
+        post.body_html = body_html
+        # ########
         post.save ()
         # deal tags
         for tag in tag_list:
@@ -145,7 +165,7 @@ def post_save (request, post_id):
 def post_view (request, post_id):
     try:
         post = Post.objects.get (pk = post_id)
-        body = post.body
+        body_html = post.body_html
         tags = post.tags.all ()
         related_next_posts = []
         # if you want create new one
@@ -154,6 +174,7 @@ def post_view (request, post_id):
             forum = forum [0],
             title = "re: " + post.title,
             body = "",
+            body_html = "",
             modified_by = u) 
         ###############################
         if Post.objects.filter (pre_post_id = post.pk):

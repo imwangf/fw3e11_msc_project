@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'wikiforum',
     'accounts',
+    'mindview',
 )
 
 # A sample logging configuration. The only tangible logging

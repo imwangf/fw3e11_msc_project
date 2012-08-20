@@ -10,6 +10,7 @@ admin.autodiscover()
 urlpatterns = patterns('',
     url (r'^wikiforum/', include ('wikiforum.urls')),
     url (r'^accounts/', include ('accounts.urls')),
+    url (r'^mindview/', include ('mindview.urls')),
     url (r'^$', direct_to_template,
         {'template': 'index.html'}),
     # Examples:

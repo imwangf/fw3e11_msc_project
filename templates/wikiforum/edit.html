@@ -53,9 +53,7 @@
     {% csrf_token %}
     Title: <input name="title" class="t" value="{{ title }}">
     <br />
-    <textarea name="body" rows="20" cols="60">
-        {{ body }}
-    </textarea>
+    <textarea name="body" rows="20" cols="60">{{ body }}</textarea>
     <br />
     Tags: <input name="tags" class="t" value="{{ tags }}">
     <input type="submit" class="button" value="Post" />
