@@ -147,7 +147,7 @@ div#content {
     {% if not related_pre_post %}<h3>None</h3>
     {% else %}
     <h3>Related pre-post: <a href="/wikiforum/posts/{{ related_pre_post.pk }}/">{{ related_pre_post.title }}</a></h3>
-    <article>{{ body_html|safe }}</article>
+    <article>{{ related_pre_post.body_html|safe }}</article>
     {% endif %}
     </section>
 </div>
