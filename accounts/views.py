@@ -56,6 +56,7 @@ class LoginForm (forms.Form):
     password = forms.CharField (label = "Password", widget=forms.PasswordInput(render_value=False))
 
 def login_view (request):
+    print request.META['HTTP_USER_AGENT'], request.META['REMOTE_ADDR']
     if request.method == 'POST':
         form = LoginForm (request.POST)
         if form.is_valid ():
@@ -93,8 +94,12 @@ def user_view (request, username):
     try:
         # 'user' is used in session, so use 'usr' instead.
         usr = User.objects.get (username = username)
-        posts = Post.objects.filter (modified_by = usr)
-        history_records = History.objects.filter (modified_by = usr)
+	if Post.objects.filter (modified_by = usr):
+            posts = Post.objects.filter (modified_by = usr)
+	if History.objects.filter (modified_by = usr):
+            history_records = History.objects.filter (modified_by = usr)
+	for history in history_records:
+	    print history.pk
     except User.DoesNotExist:
         return render_to_response ("accounts/user_does_not_exist.html")
     return render_to_response ("accounts/user.html", locals (), context_instance = RequestContext (request))

@@ -1,15 +1,14 @@
 {% extends "base.html" %}
 {% block css %}
 <style type="text/css">
-    li {
-        width: 98%;
-        overflow-x: hidden;
-        overflow-y: scroll;
-        padding: 2px;
+    table {
+        border: 1px solid #c0c0c0;
     }
-    
-    ul {
-        margin: 5px 5px;
+    tr {
+        border: 1px solid #c0c0c0;
+    }
+    td {
+        border: 1px solid #c0c0c0;
     }
 </style>
 {% endblock %}
@@ -20,12 +19,22 @@
 
 {% block content %}
 {% if history_list %}
-<ul>
+<table>
+    <tr>
+        <td>History record</td>
+        <td>time</td>
+        <td>user</td>
+        <td>contents</td>
+    </tr>
     {% for history in history_list %}
-    <li>{{ history }} -- {{ history.modified }} -- {{ history.modified_by }}
-    </li>
+    <tr>
+        <td>{{ history }}</td>
+        <td>{{ history.modified }}</td>
+        <td>{{ history.modified_by }}</td>
+        <td>{{ history.body}}</td>
+    </tr>
     {% endfor %}
-</ul>
+</table>
 {% else %}
 No history record! &nbsp;
 <a href="../">BACK TO EDIT</a>

@@ -17,7 +17,7 @@
             $('#next-post ul li').click(function() {
                 var li_id = $(this).children("h4").children("a").attr('id');
                 $.ajax({
-                    url: 'http://127.0.0.1:8000/mindview/' + li_id + '/',
+                    url: '/mindview/' + li_id + '/',
                     dataType: 'json',
                     success: function (data) {
                     $('#next-post ul li#'+li_id).attr('data-content', data['items']);
