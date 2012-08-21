@@ -39,6 +39,25 @@
 </style>
 {% endblock %}
 
+{% block js %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-typeahead.js"></script>
+<script type="text/javascript">
+    $(function () {
+            var data_source = [];
+            $.ajax({
+                url: '/wikiforum/search/get_all_tags/',
+                dataType: 'json',
+                success: function(data) {
+                data_source = data.items;
+                var options = {source: data_source};
+                $('#id_tags_input').typeahead(options);
+                }
+                });
+            });
+</script>
+{% endblock %}
+
 {% block title %}
 {% if body == "" %}
     Post New
@@ -55,7 +74,7 @@
     <br />
     <textarea name="body" rows="20" cols="60">{{ body }}</textarea>
     <br />
-    Tags: <input name="tags" class="t" value="{{ tags }}">
+    Tags: <input id="id_tags_input" name="tags" class="t" autocomplete="off" value="{{ tags }}">
     <input type="submit" class="button" value="Post" />
 </form>
 {% endblock %}

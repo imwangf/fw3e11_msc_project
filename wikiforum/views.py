@@ -7,12 +7,13 @@ from django.template import RequestContext
 
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
+import json
 
 forum = Forum.objects.get_or_create (name = "fw3e11-forum")
 
 from django import forms
 class SearchForm (forms.Form):
-    search_text = forms.CharField (label=False)
+    search_text = forms.CharField (label=False,widget=forms.TextInput(attrs={'data-provide':'typeahead','autocomplete':'off'}))
 
 def new_pk ():
     if Post.objects.all ():
@@ -29,6 +30,34 @@ def request_test (request):
     print context_instance.dicts[2]['user']
     # which will return 'test' -- a username
 ########################################
+
+
+@login_required
+def get_all_title (request):
+    try:
+        message = {}
+        title = []
+        title_list = [ttl.title for ttl in Post.objects.all ()]
+        message ['items'] = title_list
+        data = json.dumps (message)
+        return HttpResponse (data, mimetype="application/json")
+    except Exception as e:
+        print e
+        return HttpResponse ("Error")
+
+@login_required
+def get_all_tags (request):
+    try:
+        message = {}
+        tags = []
+        tag_list = [tgs.name for tgs in Tag.objects.all ()]
+        message ['items'] = tag_list
+        data = json.dumps (message)
+        return HttpResponse (data, mimetype="application/json")
+    except Exception as e:
+        print e
+        return HttpResponse ("Error")
+
 
 # Search
 @login_required

@@ -14,17 +14,16 @@
                 }, function(){
                 $(this).css("background", "white")
                 });
-            $('#next-post ul li').hover(function() {
+            $('#next-post ul li').click(function() {
                 var li_id = $(this).children("h4").children("a").attr('id');
                 $.ajax({
                     url: 'http://127.0.0.1:8000/mindview/' + li_id + '/',
                     dataType: 'json',
                     success: function (data) {
-                    $('#next-post ul li').attr('data-content', data['items']);
+                    $('#next-post ul li#'+li_id).attr('data-content', data['items']);
+                    $('#info'+li_id).text(data['items']);
                     }
                     });
-                }, function() {
-                ;
                 });
             $('#next-post ul li').popover({placement:'right'});
 
@@ -284,9 +283,9 @@ div#content {
 {% if not related_next_posts %}<h4>None</h4>{% endif %}
 <ul>
     {% for related_next_post in related_next_posts %}
-    <li rel="popover" data-content="void"><span class="line"></span>
+    <li id="{{ related_next_post.pk }}" rel="popover" data-content="<p id='info{{ related_next_post.pk }}'></p>"><span class="line"></span>
     <h4>
-        <a href="/wikiforum/posts/{{ related_next_post.pk }}/" id="{{ related_next_post.pk }}" title="{{ related_next_post.title }}">{{ related_next_post.title }}</a>
+        <a href="/wikiforum/posts/{{ related_next_post.pk }}/" id="{{ related_next_post.pk }}">{{ related_next_post.title }}</a>
     </h4>
     </li>
 {% endfor %}
