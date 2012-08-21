@@ -1,8 +1,18 @@
 # Create your views here.
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
+from django.contrib.auth.decorators import login_required
 
 from wikiforum.models import Post
+import json
+
+def convert_set_to_json (data):
+    message = {}
+    value = []
+    for item in data:
+        value.append ({"title": item.title})
+    message ['items'] = value
+    return json.dumps (message)
 
 def find_father (post_id):
     post = Post.objects.get (pk = post_id)
@@ -25,11 +35,18 @@ def find_children (post_id):
         return None
     return next_posts
 
-def find (request, post_id):
+@login_required
+def body_overview (request, post_id):
     try:
-        p = find_father (post_id)
-        n = find_children (post_id)
-        return HttpResponse ("ok")
+        cur = Post.objects.get (pk = post_id)
+        # p = find_father (post_id)
+        # n = find_children (post_id)
+        # data = convert_set_to_json (n)
+        # return HttpResponse (data, mimetype="application/json")
+        message = {}
+        message ['items'] = cur.body_html
+        data = json.dumps (message)
+        return HttpResponse (data, mimetype="application/json")
     except:
         return HttpResponse ("Error")
 

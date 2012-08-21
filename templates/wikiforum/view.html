@@ -4,14 +4,31 @@
 
 {% block js %}
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-modal.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-        $('li').hover(function(){
+            $('li').hover(function(){
                 $(this).css("background", "#c0c0c0");
-            }, function(){
+                }, function(){
                 $(this).css("background", "white")
-            });
-    });
+                });
+            $('#next-post ul li').hover(function() {
+                var li_id = $(this).children("h4").children("a").attr('id');
+                $.ajax({
+                    url: 'http://127.0.0.1:8000/mindview/' + li_id + '/',
+                    dataType: 'json',
+                    success: function (data) {
+                    $('#next-post ul li').attr('data-content', data['items']);
+                    }
+                    });
+                }, function() {
+                ;
+                });
+            $('#next-post ul li').popover({placement:'right'});
+
+        });
 </script>
 {% endblock %}
 
@@ -112,7 +129,7 @@ div#content {
     margin: 5px 0px;
 }
 
-/**************************/
+/******************************/
 #next-post ul li {
     position: relative;
 }
@@ -124,6 +141,116 @@ div#content {
     border-top: 1px solid #c0c0c0;
     display: block;
 }
+/******************************/
+.popover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1010;
+  display: none;
+  padding: 5px;
+}
+
+.popover.top {
+  margin-top: -5px;
+}
+
+.popover.right {
+  margin-left: 5px;
+}
+
+.popover.bottom {
+  margin-top: 5px;
+}
+
+.popover.left {
+  margin-left: -5px;
+}
+
+.popover.top .arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-top: 5px solid #000000;
+  border-right: 5px solid transparent;
+  border-left: 5px solid transparent;
+}
+
+.popover.right .arrow {
+  top: 50%;
+  left: 0;
+  margin-top: -5px;
+  border-top: 5px solid transparent;
+  border-right: 5px solid #000000;
+  border-bottom: 5px solid transparent;
+}
+
+.popover.bottom .arrow {
+  top: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-right: 5px solid transparent;
+  border-bottom: 5px solid #000000;
+  border-left: 5px solid transparent;
+}
+
+.popover.left .arrow {
+  top: 50%;
+  right: 0;
+  margin-top: -5px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 5px solid #000000;
+}
+
+.popover .arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+.popover-inner {
+  width: 200px;
+  padding: 3px;
+  overflow: hidden;
+  background: #000000;
+  background: rgba(0, 0, 0, 0.8);
+  -webkit-border-radius: 6px;
+     -moz-border-radius: 6px;
+          border-radius: 6px;
+  -webkit-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+     -moz-box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+          box-shadow: 0 3px 7px rgba(0, 0, 0, 0.3);
+}
+
+/*.popover-title {
+  padding: 9px 15px;
+  line-height: 1;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #eee;
+  -webkit-border-radius: 3px 3px 0 0;
+     -moz-border-radius: 3px 3px 0 0;
+          border-radius: 3px 3px 0 0;
+}*/
+
+.popover-content {
+  padding: 14px;
+  background-color: #ffffff;
+  -webkit-border-radius: 0 0 3px 3px;
+     -moz-border-radius: 0 0 3px 3px;
+          border-radius: 0 0 3px 3px;
+  -webkit-background-clip: padding-box;
+     -moz-background-clip: padding-box;
+          background-clip: padding-box;
+}
+
+.popover-content p,
+.popover-content ul,
+.popover-content ol {
+  margin-bottom: 0;
+}
+/* End popover                */
+
 </style>
 {% endblock %}
 {% block content %}
@@ -157,15 +284,16 @@ div#content {
 {% if not related_next_posts %}<h4>None</h4>{% endif %}
 <ul>
     {% for related_next_post in related_next_posts %}
-    <li><span class="line"></span>
+    <li rel="popover" data-content="void"><span class="line"></span>
     <h4>
-        <a href="/wikiforum/posts/{{ related_next_post.pk }}/">{{ related_next_post.title }}</a>
+        <a href="/wikiforum/posts/{{ related_next_post.pk }}/" id="{{ related_next_post.pk }}" title="{{ related_next_post.title }}">{{ related_next_post.title }}</a>
     </h4>
     </li>
 {% endfor %}
 </ul>
 </section>
 </div>
+
 {% endblock %}
 
 {% block footer %}
