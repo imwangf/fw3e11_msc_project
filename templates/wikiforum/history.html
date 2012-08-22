@@ -9,6 +9,7 @@
     }
     td {
         border: 1px solid #c0c0c0;
+        padding: 2px 4px;
     }
 </style>
 {% endblock %}
@@ -21,16 +22,14 @@
 {% if history_list %}
 <table>
     <tr>
-        <td>History record</td>
-        <td>time</td>
         <td>user</td>
+        <td>time</td>
         <td>contents</td>
     </tr>
     {% for history in history_list %}
     <tr>
-        <td>{{ history }}</td>
-        <td>{{ history.modified }}</td>
         <td>{{ history.modified_by }}</td>
+        <td>{{ history.modified }}</td>
         <td>{{ history.body}}</td>
     </tr>
     {% endfor %}
