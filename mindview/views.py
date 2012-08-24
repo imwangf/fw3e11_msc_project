@@ -24,6 +24,15 @@ def find_father (post_id):
         return None
     return pre_post
 
+def find_ancestor (post_id):
+    while True:
+        try:
+            p = find_father (p.pk)
+            if not find_father (p.pk):
+                break
+            return p
+        except: return "Error"
+
 def find_children (post_id):
     post = Post.objects.get (pk = post_id)
     print "current post: " + post.title
@@ -48,5 +57,14 @@ def body_overview (request, post_id):
         data = json.dumps (message)
         return HttpResponse (data, mimetype="application/json")
     except:
+        return HttpResponse ("Error")
+
+@login_required
+def tree_view (request, post_id):
+    try:
+        p = find_ancestor (post_id)
+        return HttpResponse (p)
+    except Exception as e:
+        print e
         return HttpResponse ("Error")
 

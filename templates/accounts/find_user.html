@@ -55,8 +55,7 @@
 <div>
     <form id="find_user" method="post" action="" label="">
         {% csrf_token %}
-        <label>&nbsp;</label>
-        <input type="text" id="search_text" name="search" rows="1" cols="15"></input>
+        <input type="text" id="search_text" name="search" rows="1" cols="15" placeholder="Find users by username"></input>
         <input type="submit" id="submit" value="Find" />
     </form>
 </div>

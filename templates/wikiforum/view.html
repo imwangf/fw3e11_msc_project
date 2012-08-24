@@ -26,6 +26,16 @@
                     });
                 });
             $('#next-post ul li').popover({placement:'right'});
+            $('h2').click(function() {
+                var h2_id = $(this).attr('id');
+                $.ajax({
+                    url: '/mindview/treeview/' + h2_id + '/',
+                    dataType: 'json',
+                    success: function (data) {
+                    /*************/;
+                    }
+                    });
+                });
 
         });
 </script>
@@ -153,7 +163,7 @@ div#content {
 <div id="content">
 <div class="left">
     <section id="current-post">
-    <h2>{{ post.title }}&nbsp;<span>by <a href="/accounts/users/{{ post.modified_by.username }}/">{{ post.modified_by.username }}</a></span></h2>
+    <h2 id={{ post.pk }}>{{ post.title }}&nbsp;<span>by <a href="/accounts/users/{{ post.modified_by.username }}/">{{ post.modified_by.username }}</a></span></h2>
     <article>{{ body_html|safe }}</article>
     <br />
     <p class="tag">Tag: 
@@ -169,14 +179,14 @@ div#content {
     <section id="pre-post">
     {% if not related_pre_post %}<h3>None</h3>
     {% else %}
-    <h3>Related pre-post: <a href="/wikiforum/posts/{{ related_pre_post.pk }}/">{{ related_pre_post.title }}</a></h3>
+    <h3>Pre post: <a href="/wikiforum/posts/{{ related_pre_post.pk }}/">{{ related_pre_post.title }}</a></h3>
     <article>{{ related_pre_post.body_html|safe }}</article>
     {% endif %}
     </section>
 </div>
 
 <section id="next-post">
-<h3>Related next-post:</h3>
+<h3>Next post:</h3>
 {% if not related_next_posts %}<h4>None</h4>{% endif %}
 <ul>
     {% for related_next_post in related_next_posts %}

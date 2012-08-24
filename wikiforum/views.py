@@ -13,7 +13,7 @@ forum = Forum.objects.get_or_create (name = "fw3e11-forum")
 
 from django import forms
 class SearchForm (forms.Form):
-    search_text = forms.CharField (label=False,widget=forms.TextInput(attrs={'data-provide':'typeahead','autocomplete':'off'}))
+    search_text = forms.CharField (label=False,widget=forms.TextInput(attrs={'data-provide':'typeahead','autocomplete':'off', 'placeholder': 'Search posts by title or content'}))
 
 def new_pk ():
     if Post.objects.all ():
