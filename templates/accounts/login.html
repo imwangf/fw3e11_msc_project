@@ -25,7 +25,7 @@
         background: #ff9;
         width: 150px;
     }
-    #submit {
+    .btn {
         vertical-align: middle;
         background: none;
         border: none;
@@ -33,7 +33,7 @@
         font-size: 16px;
         padding: 2px 10px;
     }
-    #submit:hover {
+    .btn:hover {
         vertical-align: middle;
         background: none;
         border: none;
@@ -58,7 +58,12 @@
     {% csrf_token %}
     <table>
         {{ form.as_table }}
-        <tr><th>&nbsp;</th><td><input id="submit" type="submit" value="Login" /></td></tr>
+        <tr><th>&nbsp;</th>
+            <td><input class="btn" type="submit" value="Login" /></td>
+        </tr>
+        <tr><th>or</th>
+            <td><input class="btn" type="button" value="Register" onClick="location.href='/accounts/register/'"/></td>
+        </tr>
     </table>
 </form>
 {% endblock %}
