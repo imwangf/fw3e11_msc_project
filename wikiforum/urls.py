@@ -18,5 +18,6 @@ urlpatterns = patterns ('wikiforum.views',
     url (r'^search/get_all_title/$', 'get_all_title'),
     url (r'^search/get_all_tags/$', 'get_all_tags'),
 
-    url (r'^posts/(?P<post_id>[^/]+)/comment/save', 'comment_save'),
+    url (r'^posts/(?P<post_id>[^/]+)/comment/save/$', 'comment_save'),
+    url (r'^posts/(?P<post_id>[^/]+)/comment/(?P<comment_id>[^/]+)/delete/$', 'comment_delete'),
 )

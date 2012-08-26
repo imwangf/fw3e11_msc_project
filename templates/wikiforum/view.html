@@ -9,7 +9,7 @@
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
-            $('li').hover(function(){
+            $('#next-post li').hover(function(){
                 $(this).css("background", "#c0c0c0");
                 }, function(){
                 $(this).css("background", "white")
@@ -83,6 +83,9 @@
     padding: 5px 0px;
     border-top: 1px dashed #ccc;
     border-bottom: 1px dashed #ccc;
+}
+#current-post #comment .del {
+    color: #c0c0c0;
 }
 
 #pre-post {
@@ -190,7 +193,14 @@ div#content {
         Comments:
         <ol>
             {% for comment in comments %}
-            <li>{{ comment.content }}&nbsp;<span>by <a href="/accounts/users/{{ comment.modified_by.username }}/">{{ comment.modified_by.username }}</a></span></li>
+            <li>{{ comment.content }}&nbsp;
+            <span>
+                by <a href="/accounts/users/{{ comment.modified_by.username }}/">{{ comment.modified_by.username }}</a>
+                {% if comment.modified_by.username == user.username %}
+                <a class="del" href="/wikiforum/posts/{{ post.pk }}/comment/{{ comment.pk }}/delete/">delete</a>
+                {% endif %}
+            </span>
+            </li>
             {% endfor %}
         </ol>
         <form method="post" action="/wikiforum/posts/{{ post_id }}/comment/save/">

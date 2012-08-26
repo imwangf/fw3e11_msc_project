@@ -255,3 +255,14 @@ def comment_save (request, post_id):
         print e
     return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
 
+@login_required
+def comment_delete (request, post_id, comment_id):
+    try:
+        comment = Comment.objects.get (pk = comment_id)
+        if comment.modified_by.username == request.session ['username']:
+            comment.delete ()
+        else:
+            pass
+    except Exception as e:
+        print e
+    return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
