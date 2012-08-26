@@ -18,10 +18,18 @@ class Post (models.Model):
     modified = models.DateTimeField ('Modified', auto_now_add = True)
     modified_by = models.ForeignKey (User)
     pre_post = models.ForeignKey ('self', blank = True, null = True, related_name = '+')
-    #next_posts = models.ForeignKey ('self', blank = True, null = True, related_name = '+')
 
     def __unicode__ (self):
         return self.title
+
+class Comment (models.Model):
+    post = models.ForeignKey (Post)
+    content = models.TextField ()
+    modified = models.DateTimeField ('Modified', auto_now_add = True)
+    modified_by = models.ForeignKey (User)
+
+    def num (self):
+        return sum ([t.num() for t in self.post_set.all ()])
 
 class Tag (models.Model):
     name = models.CharField (max_length = 200, primary_key = True)

@@ -36,7 +36,6 @@
                     }
                     });
                 });
-
         });
 </script>
 {% endblock %}
@@ -52,11 +51,11 @@
     border: 1px solid #ccc;
     padding: 0 20px;
     float:right;
-
 }
+
 #current-post span.edit {
     float: right;
-    margin-top: 10px;
+    margin-top: 2px;
 }
 #current-post span.edit a {
     margin-left: 5px;
@@ -149,13 +148,25 @@ div#content {
 }
 /******************************/
 .popover-title {
-  padding: 0px 0px;
-  line-height: 0;
-  background-color: #fff;
-  border-bottom: 0px solid #000;
-  -webkit-border-radius: 0px 0px 0 0;
-     -moz-border-radius: 0px 0px 0 0;
-          border-radius: 0px 0px 0 0;
+    padding: 0px 0px;
+    line-height: 0;
+    background-color: #fff;
+    border-bottom: 0px solid #000;
+    -webkit-border-radius: 0px 0px 0 0;
+    -moz-border-radius: 0px 0px 0 0;
+        border-radius: 0px 0px 0 0;
+}
+
+/******************************/
+#comment {
+    margin: 4px 2px;
+}
+#comment span {
+    float: right;
+    font-style: italic;
+} 
+#commment li {
+    margin: 2px;
 }
 </style>
 {% endblock %}
@@ -174,6 +185,22 @@ div#content {
         {% endif %}
     </p>
     <span class="edit"><a href="/wikiforum/posts/{{ post.pk }}/edit/">Edit this post?</a>&nbsp;<a href="reply/">Add reply</a>&nbsp;or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New post</a></span>
+    <br/>
+        <section id="comment">
+        Comments:
+        <ol>
+            {% for comment in comments %}
+            <li>{{ comment.content }}&nbsp;<span>by <a href="/accounts/users/{{ comment.modified_by.username }}/">{{ comment.modified_by.username }}</a></span></li>
+            {% endfor %}
+        </ol>
+        <form method="post" action="/wikiforum/posts/{{ post_id }}/comment/save/">
+            {% csrf_token %}
+            <table>
+                <tr><textarea name="content" rows="1"></textarea></tr>
+                <tr><input type="submit" class="button" value="Comment" /></tr>
+            </table>
+        </form>
+        </section>
     </section>
     
     <section id="pre-post">

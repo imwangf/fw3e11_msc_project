@@ -197,6 +197,7 @@ def post_view (request, post_id):
         body_html = post.body_html
         tags = post.tags.all ()
         related_next_posts = []
+        comments = Comment.objects.filter (post = post)
         # if you want create new one
         u = User.objects.get (username = request.session ['username'])
         new_post = Post (pk = new_pk (),
@@ -239,4 +240,18 @@ def history_view (request, post_id):
     except Post.DoesNotExist:
         pass
     return render_to_response ("wikiforum/history.html", locals (), context_instance = RequestContext (request))
+
+@login_required
+def comment_save (request, post_id):
+    try:
+        post = Post.objects.get (pk = post_id)
+        content = request.POST ['content']
+        u = User.objects.get (username = request.session ['username'])
+        comment = Comment (post = post,
+                content = content,
+                modified_by = u)
+        comment.save ()
+    except Exception as e:
+        print e
+    return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
 

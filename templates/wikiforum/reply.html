@@ -12,6 +12,7 @@
     textarea {
         padding: 3px 2px;
         font-size: 15px;
+        width: 400px;
     }
     .button {
         vertical-align: middle;
@@ -43,7 +44,7 @@ Reply: {{ post.title }}
     {% csrf_token %}
     Title: <input name="title" class="t" value={{ title }} >
     <br />
-    <textarea name="body" rows="20" cols="60">{{ body }}</textarea>
+    <textarea name="body" rows="10" cols="20">{{ body }}</textarea>
     <br />
     Tags: <input name="tags" class="t" value={{ tags }} >
     <input type="submit" class="button" value="Reply" />
