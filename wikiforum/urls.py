@@ -20,4 +20,6 @@ urlpatterns = patterns ('wikiforum.views',
 
     url (r'^posts/(?P<post_id>[^/]+)/comment/save/$', 'comment_save'),
     url (r'^posts/(?P<post_id>[^/]+)/comment/(?P<comment_id>[^/]+)/delete/$', 'comment_delete'),
+
+    url (r'^posts/(?P<post_id>[^/]+)/edit/history/(?P<history_id>[^/]+)/$', 'history_rollback'),
 )

@@ -25,12 +25,14 @@
         <td>user</td>
         <td>time</td>
         <td>contents</td>
+        <td>rollback</td>
     </tr>
     {% for history in history_list %}
     <tr>
         <td>{{ history.modified_by }}</td>
         <td>{{ history.modified }}</td>
         <td>{{ history.body}}</td>
+        <td><a href="{{ history.pk }}/">rollback</a></td>
     </tr>
     {% endfor %}
 </table>

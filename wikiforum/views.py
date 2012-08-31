@@ -23,6 +23,13 @@ def new_pk ():
         pk = 1
     return pk
 
+def to_html (body):
+    body_html = body.replace("\r\n", "<br/>")
+    body_html = body.replace("\n", "<br/>")
+    body_html = body.replace("\r", "<br/>")
+    return body_html
+
+
 ########################################
 def request_test (request):
     # print dir(RequestContext)
@@ -38,6 +45,7 @@ def get_all_title (request):
         message = {}
         title = []
         title_list = [ttl.title for ttl in Post.objects.all ()]
+        title_list = list (set (title_list)) # remove duplicated titles
         message ['items'] = title_list
         data = json.dumps (message)
         return HttpResponse (data, mimetype="application/json")
@@ -135,9 +143,7 @@ def post_save (request, post_id):
         # body
         if post.body == body:
             return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
-        body_html = body.replace("\r\n", "<br/>")
-        body_html = body.replace("\n", "<br/>")
-        body_html = body.replace("\r", "<br/>")
+        body_html = to_html (body)
 
         post.body = body
         post.body_html = body_html
@@ -168,9 +174,7 @@ def post_save (request, post_id):
         if body == "":
             return HttpResponse ("Body can't be null.")
         # textarea
-        body_html = body.replace("\r\n", "<br/>")
-        body_html = body.replace("\n", "<br/>")
-        body_html = body.replace("\r", "<br/>")
+        body_html = to_html (body)
 
         post.body = body
         post.body_html = body_html
@@ -266,3 +270,21 @@ def comment_delete (request, post_id, comment_id):
     except Exception as e:
         print e
     return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
+
+@login_required
+def history_rollback (request, post_id, history_id):
+    try:
+        post = Post.objects.get (pk = post_id)
+        history = History.objects.get (pk = history_id)
+        u = User.objects.get (username = request.session ['username'])
+        if u.is_superuser:
+            post.body = history.body
+            post.body_html = to_html (post.body)
+            post.save ()
+            History.objects.create (post = post, body = "rollback by " + u.username + ":\r\n" + post.body, modified_by = u)
+        else:
+            return HttpResponse ("Permision denied.")
+    except Exception as e:
+        print e
+    return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
+
