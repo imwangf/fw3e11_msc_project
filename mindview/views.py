@@ -53,7 +53,7 @@ def body_overview (request, post_id):
         # data = convert_set_to_json (n)
         # return HttpResponse (data, mimetype="application/json")
         message = {}
-        message ['items'] = cur.body
+        message ['items'] = cur.body_html
         data = json.dumps (message)
         return HttpResponse (data, mimetype="application/json")
     except:

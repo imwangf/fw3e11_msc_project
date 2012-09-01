@@ -7,9 +7,15 @@
     tr {
         border: 1px solid #c0c0c0;
     }
+    tr#title {
+        text-align: center;
+    }
     td {
         border: 1px solid #c0c0c0;
         padding: 2px 4px;
+    }
+    td.rollback {
+        text-align: center;
     }
 </style>
 {% endblock %}
@@ -21,19 +27,28 @@
 {% block content %}
 {% if history_list %}
 <table>
-    <tr>
-        <td>user</td>
-        <td>time</td>
-        <td>contents</td>
-        <td>rollback</td>
+    <tr id="title">
+        <td>User</td>
+        <td>Time</td>
+        <td>Contents</td>
+        <td class="rollback">Rollback</td>
     </tr>
     {% for history in history_list %}
+    {% if not forloop.last %}
     <tr>
         <td>{{ history.modified_by }}</td>
         <td>{{ history.modified }}</td>
         <td>{{ history.body}}</td>
-        <td><a href="{{ history.pk }}/">rollback</a></td>
+        <td class="rollback"><a onClick="return confirm('Are you sure to rollback?');" href="{{ history.pk }}/">Rollback</a></td>
     </tr>
+    {% else %}
+    <tr>
+        <td>{{ history.modified_by }}</td>
+        <td>{{ history.modified }}</td>
+        <td>{{ history.body}}</td>
+        <td class="rollback">Last version</td>
+    </tr>
+    {% endif %}
     {% endfor %}
 </table>
 {% else %}
