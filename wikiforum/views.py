@@ -281,7 +281,7 @@ def history_rollback (request, post_id, history_id):
             post.body = history.body
             post.body_html = to_html (post.body)
             post.save ()
-            History.objects.create (post = post, body = "rollback by " + u.username + ":\r\n" + post.body, modified_by = u)
+            History.objects.create (post = post, body = "[rollback by " + u.username + "]:\r\n" + post.body, modified_by = u)
         else:
             return HttpResponse ("Permision denied.")
     except Exception as e:
