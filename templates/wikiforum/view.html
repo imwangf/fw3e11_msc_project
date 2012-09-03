@@ -17,7 +17,7 @@
             $('#next-post ul li').click(function() {
                 var li_id = $(this).children("h4").children("a").attr('id');
                 $.ajax({
-                    url: '/mindview/' + li_id + '/',
+                    url: '/mindview/post/' + li_id + '/',
                     dataType: 'json',
                     success: function (data) {
                     $('#next-post ul li#'+li_id).attr('data-content', data['items']);
@@ -25,7 +25,30 @@
                     }
                     });
                 });
+            /* Multiple Popover */
             $('#next-post ul li').popover({placement:'right'});
+            /* Just One Popover */
+            /* 
+            var isVisible = false;
+            var clickedAway = false;
+            $('#next-post ul li').popover({placement:'right'}).click(function(e){
+                $(this).popover('show');
+                $(this).css("background", "#c0c0c0");
+                isVisible=true;
+                e.preventDefault();
+                });
+            $(document).click(function(e){
+                if (isVisible & clickedAway) {
+                    $('#next-post ul li').popover('hide');
+                    $('#next-post ul li').css("background", "#fff");
+                    isVisible = clickedAway = false;
+                }
+                else {
+                    clickedAway=true;
+                }
+                });
+                */
+
             $('h2').click(function() {
                 var h2_id = $(this).attr('id');
                 $.ajax({
@@ -187,7 +210,12 @@ div#content {
             {% endfor %}
         {% endif %}
     </p>
-    <span class="edit"><a href="/wikiforum/posts/{{ post.pk }}/edit/">Edit this post?</a>&nbsp;<a href="reply/">Add reply</a>&nbsp;or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New post</a></span>
+    <span class="edit">
+        <a href="/wikiforum/posts/{{ post.pk }}/edit/history/">History</a>&nbsp;
+        <a href="/wikiforum/posts/{{ post.pk }}/edit/">Edit</a>&nbsp;
+        <a href="reply/">Add Reply</a>&nbsp;
+        or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">Post New</a>
+    </span>
     <br/>
         <section id="comment">
         Comments:

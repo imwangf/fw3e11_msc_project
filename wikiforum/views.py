@@ -138,6 +138,7 @@ def post_save (request, post_id):
             post.tags.add (tag)
         for tag in deleted_tags:
             post.tags.remove (tag)
+
         post.save ()
         # sid = transaction.savepoint ()
         # body
@@ -150,7 +151,18 @@ def post_save (request, post_id):
         # textarea
         #re.sub("\r", "<br/>", post.body)
                 # ########
-        post.save ()
+        if u is post.modified_by or u.is_superuser:
+            post.save ()
+            history = History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
+            hcs = History.objects.filter (post = post, current_version = True)
+            for hc in hcs:
+                hc.current_version = False
+                hc.save ()
+            history.current_version = True
+            history.save ()
+
+        else:
+            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = False)
     # Post New Case
     except Post.DoesNotExist:
         # reply case
@@ -179,7 +191,11 @@ def post_save (request, post_id):
         post.body = body
         post.body_html = body_html
         # ########
-        post.save ()
+        if u is post.modified_by or u.is_superuser:
+            post.save ()
+            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
+        else:
+            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = False)
         # deal tags
         for tag in tag_list:
             post.tags.add (tag)
@@ -187,10 +203,7 @@ def post_save (request, post_id):
             del request.session ['pre_post']        
         except:
             pass
-    try:
-        post_obj = Post.objects.get (pk = post_id)
-        History.objects.create (post = post_obj, body = post.body, modified_by = u)
-    except: pass
+    # history part moved
     return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
 
 # View
@@ -277,14 +290,65 @@ def history_rollback (request, post_id, history_id):
         post = Post.objects.get (pk = post_id)
         history = History.objects.get (pk = history_id)
         u = User.objects.get (username = request.session ['username'])
+        if not history.is_accepted:
+            return HttpResponseRedirect (".")
         if u.is_superuser:
             post.body = history.body
             post.body_html = to_html (post.body)
             post.save ()
-            History.objects.create (post = post, body = "[rollback by " + u.username + "]:\r\n" + post.body, modified_by = u)
+            history = History.objects.create (post = post, body = "[rollback by " + u.username + "]:\r\n" + post.body, modified_by = u, is_accepted = True, current_version = True)
+            hcs = History.objects.filter (post = post, current_version = True)
+            for hc in hcs:
+                hc.current_version = False
+                hc.save ()
+            history.current_version = True
+            post.save ()
+            history.save ()
+
         else:
-            return HttpResponse ("Permision denied.")
+            return HttpResponse ("Permission denied.")
     except Exception as e:
         print e
     return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
 
+@login_required
+def request_accept (request, post_id, history_id):
+    try:
+        post = Post.objects.get (pk = post_id)
+        history = History.objects.get (pk = history_id)
+        u = User.objects.get (username = request.session ['username'])
+        if u.is_superuser or u is post.modified_by:
+            post.title = history.title
+            post.body = history.body
+            post.body_html = to_html (post.body)
+            history.processed_by = u
+            history.is_accepted = history.is_processed = True
+            hcs = History.objects.filter (post = post, current_version = True)
+            for hc in hcs:
+                hc.current_version = False
+                hc.save ()
+            history.current_version = True
+            post.save ()
+            history.save ()
+        else:
+            return HttpResponse ("Permission denied.")
+    except Exception as e:
+        print e
+    return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")
+
+@login_required
+def request_deny (request, post_id, history_id):
+    try:
+        post = Post.objects.get (pk = post_id)
+        history = History.objects.get (pk = history_id)
+        u = User.objects.get (username = request.session ['username'])
+        if u.is_superuser or u is post.modified_by:
+            history.processed_by = u
+            history.is_accepted = False
+            history.is_processed = True
+            history.save ()
+        else:
+            return HttpResponse ("Permission denied.")
+    except Exception as e:
+        print e
+    return HttpResponseRedirect ("/wikiforum/posts/" + post_id + "/")

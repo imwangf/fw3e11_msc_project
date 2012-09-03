@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render_to_response
 from django.contrib.auth.decorators import login_required
 
-from wikiforum.models import Post
+from wikiforum.models import Post, History
 import json
 
 def convert_set_to_json (data):
@@ -57,6 +57,18 @@ def body_overview (request, post_id):
         data = json.dumps (message)
         return HttpResponse (data, mimetype="application/json")
     except:
+        return HttpResponse ("Error")
+
+@login_required
+def history_overview (request, history_id):
+    try:
+        history = History.objects.get (pk = history_id)
+        message = {}
+        message ['items'] = history.body
+        data = json.dumps (message)
+        return HttpResponse (data, mimetype="application/json")
+    except Exception as e:
+        print e
         return HttpResponse ("Error")
 
 @login_required

@@ -15,4 +15,6 @@ urlpatterns = patterns ('accounts.views',
     url (r'^users/$', 'find_user'),
     url (r'^users/(?P<username>[^/]+)/$', 'user_view'),
 
+    url (r'^notification/$', 'request_note'),
+
 )

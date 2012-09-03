@@ -10,6 +10,10 @@
     tr#title {
         text-align: center;
     }
+    tr.current-version {
+        color: red;
+        font-weight: bold;
+    }
     td {
         border: 1px solid #c0c0c0;
         padding: 2px 4px;
@@ -17,7 +21,68 @@
     td.rollback {
         text-align: center;
     }
+    td.status {
+        text-align: center;
+    }
+    .popover-title {
+        padding: 0px 0px;
+        line-height: 0;
+        background-color: #fff;
+        border-bottom: 0px solid #000;
+        -webkit-border-radius: 0px 0px 0 0;
+        -moz-border-radius: 0px 0px 0 0;
+        border-radius: 0px 0px 0 0;
+    }
+    .popover .arrow {
+        position: fixed;
+    }
+
 </style>
+{% endblock %}
+
+{% block js %}
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-tooltip.js"></script>
+<script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
+<script type="text/javascript">
+    $(document).ready(function(){
+            $('tr').hover(function(){
+                $(this).css("color", "red");
+                }, function(){
+                $(this).css("color", "#000")
+                });
+            
+            $('tr').click(function() {
+                var tr_id = $(this).attr('id');
+                $.ajax({
+                    url: '/mindview/history/' + tr_id + '/',
+                    dataType: 'json',
+                    success: function (data) {
+                    $('tr#'+tr_id).attr('data-content', data['items']);
+                    $('#info'+tr_id).text(data['items']);
+                    }
+                    });
+                });
+            var isVisible = false;
+            var clickedAway = false;
+            $('tr').popover({placement:'right'}).click(function(e){
+                $(this).popover('show');
+                $(this).css("background", "#c0c0c0");
+                isVisible=true;
+                e.preventDefault();
+                });
+            $(document).click(function(e){
+                if (isVisible & clickedAway) {
+                    $('tr').popover('hide');
+                    $('tr').css("background", "#fff");
+                    isVisible = clickedAway = false;
+                }
+                else {
+                    clickedAway=true;
+                }
+                });
+        });
+</script>
 {% endblock %}
 
 {% block title %}History for "{{ post_obj.title }}"{% endblock %}
@@ -30,23 +95,31 @@
     <tr id="title">
         <td>User</td>
         <td>Time</td>
-        <td>Contents</td>
+        <td>Status</td>
         <td class="rollback">Rollback</td>
     </tr>
     {% for history in history_list %}
-    {% if not forloop.last %}
-    <tr>
+    {% if not history.current_version %}
+    <tr id="{{ history.pk }}"rel="popover" data-content="<p id='info{{ history.pk }}'></p>">
         <td>{{ history.modified_by }}</td>
         <td>{{ history.modified }}</td>
-        <td>{{ history.body}}</td>
+        {% if history.is_accepted %}
+        <td class="status">Accepted{% if history.processed_by %} by <a href="/accounts/users/{{ history.processed_by.username }}/">{{ history.processed_by.username }}</a>{% endif %}</td>
         <td class="rollback"><a onClick="return confirm('Are you sure to rollback?');" href="{{ history.pk }}/">Rollback</a></td>
+        {% elif history.is_processed %}
+        <td class="status">Denied by <a href="/accounts/users/{{ history.processed_by.username }}/">{{ history.processed_by.username }}</a></td>
+        <td class="rollback">N/A</td>
+        {% else %}
+        <td class="status"><a onClick="return confirm('Are you sure to accept?');" href ="{{ history.pk }}/accept/">Accept</a>&nbsp;or&nbsp;<a onClick="return confirm('Are you sure to deny?');" href ="{{ history.pk }}/deny/">Deny</a></td>
+        <td class="rollback">N/A</td>
+        {% endif %}
     </tr>
     {% else %}
-    <tr>
+    <tr id={{ history.pk }} class="current-version" rel="popover" data-content="<p id='info{{ history.pk }}'></p>">
         <td>{{ history.modified_by }}</td>
         <td>{{ history.modified }}</td>
-        <td>{{ history.body}}</td>
-        <td class="rollback">Last version</td>
+        <td class="status">Current Version</td>
+        <td class="rollback">N/A</td>
     </tr>
     {% endif %}
     {% endfor %}
@@ -55,4 +128,13 @@
 No history record! &nbsp;
 <a href="../">BACK TO EDIT</a>
 {% endif %}
+
+<div class="popover fade right in">
+    <div class="arrow"></div>
+    <div class="popover-inner">
+        <h3 class="popover-title"></h3>
+        <div class="popover-content">
+        </div>
+    </div>
+</div>
 {% endblock %}

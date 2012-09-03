@@ -1,6 +1,7 @@
 # Create your views here.
 
 from wikiforum.models import *
+import json
 
 from django import forms
 from django.http import HttpResponse, HttpResponseRedirect
@@ -94,12 +95,18 @@ def user_view (request, username):
     try:
         # 'user' is used in session, so use 'usr' instead.
         usr = User.objects.get (username = username)
-	if Post.objects.filter (modified_by = usr):
+        if Post.objects.filter (modified_by = usr):
             posts = Post.objects.filter (modified_by = usr)
-	if History.objects.filter (modified_by = usr):
+        if History.objects.filter (modified_by = usr):
             history_records = History.objects.filter (modified_by = usr)
-	for history in history_records:
-	    print history.pk
+            cleaned_history_records = []
+            cleaned_set = []
+            for history_record in history_records:
+                if history_record.post_id in cleaned_set:
+                    continue
+                cleaned_history_records.append (history_record)
+                cleaned_set.append (history_record.post_id)
+
     except User.DoesNotExist:
         return render_to_response ("accounts/user_does_not_exist.html")
     return render_to_response ("accounts/user.html", locals (), context_instance = RequestContext (request))
@@ -107,3 +114,30 @@ def user_view (request, username):
 @login_required
 def find_user (request):
     return render_to_response ("accounts/find_user.html", locals (), context_instance = RequestContext (request))
+
+@login_required
+def request_note (request):
+    try:
+        request_notes = []
+        u  = User.objects.get (username = request.session ['username'])
+        if u.is_superuser:
+            request_notes += History.objects.filter (is_accepted = False, is_processed = False)
+        else:
+            posts = Post.objects.filter (modified_by = u)
+            for post in posts:
+                request_notes += History.objects.filter (post = post, is_accepted = False, is_processed = False)
+        message = {}
+        value = []
+        for request_note in request_notes:
+            value.append ({
+                "post_id": request_note.post_id,
+                "creator": request_note.post.modified_by.username,
+                "title": request_note.title,
+                "modified_by": request_note.modified_by.username
+                })
+        message ['items'] = value
+        data = json.dumps (message)
+        return HttpResponse (data, mimetype="application/json")
+    except Exception as e:
+        print e
+        return HttpResponse ("No request.")
