@@ -18,10 +18,10 @@
         border: 1px solid #c0c0c0;
         padding: 2px 4px;
     }
-    td.rollback {
-        text-align: center;
-    }
-    td.status {
+    td.rollback,
+    td.status,
+    td.clk
+    {
         text-align: center;
     }
     .popover-title {
@@ -52,8 +52,8 @@
                 $(this).css("color", "#000")
                 });
             
-            $('tr').click(function() {
-                var tr_id = $(this).attr('id');
+            $('tr td.clk').click(function() {
+                var tr_id = $(this).parent().attr('id');
                 $.ajax({
                     url: '/mindview/history/' + tr_id + '/',
                     dataType: 'json',
@@ -65,7 +65,7 @@
                 });
             var isVisible = false;
             var clickedAway = false;
-            $('tr').popover({placement:'right'}).click(function(e){
+            $('tr td.clk').popover({placement:'right'}).click(function(e){
                 $(this).popover('show');
                 $(this).css("background", "#c0c0c0");
                 isVisible=true;
@@ -74,7 +74,7 @@
             $(document).click(function(e){
                 if (isVisible & clickedAway) {
                     $('tr').popover('hide');
-                    $('tr').css("background", "#fff");
+                    $('tr td.clk').css("background", "#fff");
                     isVisible = clickedAway = false;
                 }
                 else {
@@ -97,6 +97,7 @@
         <td>Time</td>
         <td>Status</td>
         <td class="rollback">Rollback</td>
+        <td>Content</td>
     </tr>
     {% for history in history_list %}
     {% if not history.current_version %}
@@ -113,13 +114,15 @@
         <td class="status"><a onClick="return confirm('Are you sure to accept?');" href ="{{ history.pk }}/accept/">Accept</a>&nbsp;or&nbsp;<a onClick="return confirm('Are you sure to deny?');" href ="{{ history.pk }}/deny/">Deny</a></td>
         <td class="rollback">N/A</td>
         {% endif %}
+        <td class="clk">click</td>
     </tr>
     {% else %}
     <tr id={{ history.pk }} class="current-version" rel="popover" data-content="<p id='info{{ history.pk }}'></p>">
         <td>{{ history.modified_by }}</td>
         <td>{{ history.modified }}</td>
-        <td class="status">Current Version</td>
+        <td class="status">Current Version<br />Accepted{% if history.processed_by %} by <a href="/accounts/users/{{ history.processed_by.username }}/">{{ history.processed_by.username }}</a>{% endif %}</td>
         <td class="rollback">N/A</td>
+        <td class="clk">click</td>
     </tr>
     {% endif %}
     {% endfor %}

@@ -151,7 +151,7 @@ def post_save (request, post_id):
         # textarea
         #re.sub("\r", "<br/>", post.body)
                 # ########
-        if u is post.modified_by or u.is_superuser:
+        if u.is_superuser or u == post.modified_by:
             post.save ()
             history = History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
             hcs = History.objects.filter (post = post, current_version = True)
@@ -191,7 +191,7 @@ def post_save (request, post_id):
         post.body = body
         post.body_html = body_html
         # ########
-        if u is post.modified_by or u.is_superuser:
+        if u.is_superuser or u == post.modified_by:
             post.save ()
             History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
         else:
@@ -317,7 +317,7 @@ def request_accept (request, post_id, history_id):
         post = Post.objects.get (pk = post_id)
         history = History.objects.get (pk = history_id)
         u = User.objects.get (username = request.session ['username'])
-        if u.is_superuser or u is post.modified_by:
+        if u.is_superuser or u == post.modified_by:
             post.title = history.title
             post.body = history.body
             post.body_html = to_html (post.body)
@@ -342,7 +342,7 @@ def request_deny (request, post_id, history_id):
         post = Post.objects.get (pk = post_id)
         history = History.objects.get (pk = history_id)
         u = User.objects.get (username = request.session ['username'])
-        if u.is_superuser or u is post.modified_by:
+        if u.is_superuser or u == post.modified_by:
             history.processed_by = u
             history.is_accepted = False
             history.is_processed = True
