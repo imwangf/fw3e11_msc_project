@@ -87,7 +87,7 @@
 
 {% block title %}History for "{{ post_obj.title }}"{% endblock %}
 
-{% block h1 %}History for "{{ post_obj.title }}"{% endblock %}
+{% block h1 %}History for <a href="../../">{{ post_obj.title }}</a>{% endblock %}
 
 {% block content %}
 {% if history_list %}

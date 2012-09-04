@@ -102,7 +102,8 @@
     font-style: italic;
 }
 #current-post article {
-    height: 200px;
+    min-height: 128px;
+    height: 60%;
     overflow: auto;
     margin-top: 5px;
 }
@@ -213,11 +214,11 @@ div#content {
             {% endfor %}
         {% endif %}
     </p>
-    <a href="/wikiforum/posts/{{ post.pk }}/edit/history/">History</a>&nbsp;
+    <a href="/wikiforum/posts/{{ post.pk }}/edit/history/">View History</a>&nbsp;
     <span class="edit">
         <a href="/wikiforum/posts/{{ post.pk }}/edit/">Edit</a>&nbsp;
-        <a href="reply/">Add Reply</a>&nbsp;
-        or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">Post New</a>
+        <a href="reply/">Reply</a>&nbsp;
+        or <a href="/wikiforum/posts/{{ new_post.pk }}/edit/">New</a>
     </span>
     <br/>
         <section id="comment">
