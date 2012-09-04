@@ -10,6 +10,10 @@
 <script src="http://twitter.github.com/bootstrap/assets/js/bootstrap-popover.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
+            $(window).load(function(){
+                $('#next-post ul li').trigger("click");
+                $('#next-post ul li').trigger("click");
+                });
             $('#next-post li').hover(function(){
                 $(this).css("background", "#c0c0c0");
                 }, function(){
@@ -27,7 +31,7 @@
                     });
                 });
             /* Multiple Popover */
-            $('#next-post ul li').popover({placement:'right'});
+            $('#next-post ul li').popover({placement:'right', title: 'Preview'});
             /* Just One Popover */
             /* 
             var isVisible = false;
@@ -175,13 +179,11 @@ div#content {
 }
 /******************************/
 .popover-title {
-    padding: 0px 0px;
-    line-height: 0;
-    background-color: #fff;
-    border-bottom: 0px solid #000;
-    -webkit-border-radius: 0px 0px 0 0;
-    -moz-border-radius: 0px 0px 0 0;
-        border-radius: 0px 0px 0 0;
+    text-align: center;
+}
+.popover {
+    position: absolute;
+    width: 250px;
 }
 
 /******************************/
