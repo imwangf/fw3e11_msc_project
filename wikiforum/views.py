@@ -121,6 +121,9 @@ def post_reply (request, post_id):
 def post_save (request, post_id):
     title = request.POST ['title']
     body = request.POST ['body']
+    try:
+        is_secure = request.POST ['is_secure']
+    except: pass
     tag_list = []
     u = User.objects.get (username = request.session ['username'])
     if 'tags' in request.POST:
@@ -151,7 +154,19 @@ def post_save (request, post_id):
         # textarea
         #re.sub("\r", "<br/>", post.body)
                 # ########
-        if u.is_superuser or u == post.modified_by:
+        if post.is_secure == True:
+            if u.is_superuser or u == post.modified_by:
+                post.save ()
+                history = History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
+                hcs = History.objects.filter (post = post, current_version = True)
+                for hc in hcs:
+                    hc.current_version = False
+                    hc.save ()
+                history.current_version = True
+                history.save ()
+            else:
+                History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = False)
+        else:
             post.save ()
             history = History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
             hcs = History.objects.filter (post = post, current_version = True)
@@ -161,25 +176,43 @@ def post_save (request, post_id):
             history.current_version = True
             history.save ()
 
-        else:
-            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = False)
     # Post New Case
     except Post.DoesNotExist:
         # reply case
         try:
             pre_post = Post.objects.get (pk = request.session ['pre_post'])
-            post = Post (title = "re: " + pre_post.title,
-                    body = "",
-                    body_html = "",
-                    forum = forum [0],
-                    modified_by = u,
-                    pre_post = pre_post)
+            try:
+                post = Post (title = "re: " + pre_post.title,
+                        body = "",
+                        body_html = "",
+                        forum = forum [0],
+                        modified_by = u,
+                        pre_post = pre_post,
+                        is_secure = is_secure)
+            except:
+                post = Post (title = "re: " + pre_post.title,
+                        body = "",
+                        body_html = "",
+                        forum = forum [0],
+                        modified_by = u,
+                        pre_post = pre_post,
+                        is_secure = False)
+        # create case
         except KeyError:
-            post = Post (title = "New post",
-                    body = "",
-                    body_html = "",
-                    forum = forum [0],
-                    modified_by = u)
+            try:
+                post = Post (title = "New post",
+                        body = "",
+                        body_html = "",
+                        forum = forum [0],
+                        modified_by = u,
+                        is_secure = is_secure)
+            except:
+                post = Post (title = "New post",
+                        body = "",
+                        body_html = "",
+                        forum = forum [0],
+                        modified_by = u,
+                        is_secure = False)
         # if
         if not title == "":
             post.title = title
@@ -191,11 +224,8 @@ def post_save (request, post_id):
         post.body = body
         post.body_html = body_html
         # ########
-        if u.is_superuser or u == post.modified_by:
-            post.save ()
-            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
-        else:
-            History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = False)
+        post.save ()
+        History.objects.create (post = post, title = title, body = post.body, modified_by = u, is_accepted = True, current_version = True)
         # deal tags
         for tag in tag_list:
             post.tags.add (tag)

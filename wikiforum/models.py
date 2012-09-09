@@ -18,6 +18,7 @@ class Post (models.Model):
     modified = models.DateTimeField ('Modified', auto_now_add = True)
     modified_by = models.ForeignKey (User) # this is always the first creator
     pre_post = models.ForeignKey ('self', blank = True, null = True, related_name = '+')
+    is_secure = models.BooleanField (default = False)
 
     def __unicode__ (self):
         return self.title

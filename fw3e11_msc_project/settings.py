@@ -1,6 +1,6 @@
 # Django settings for fw3e11_msc_project project.
 
-DEBUG = False#True
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (

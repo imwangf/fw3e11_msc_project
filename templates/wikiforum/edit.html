@@ -67,7 +67,7 @@
 
 {% block title %}
 {% if body == "" %}
-    Post New
+    New Post
 {% else %}
     Edit
 {% endif %}
@@ -82,6 +82,9 @@
     <textarea name="body" rows="10" cols="20">{{ body }}</textarea>
     <br />
     Tags: <input id="id_tags_input" name="tags" class="t" autocomplete="off" value="{{ tags }}">
+    {% if body == "" %}
+    <br />secure: <input type="checkbox" name="is_secure" value="is_secure">
+    {% endif %}
     <input type="submit" class="button" value="Post" />
 </form>
 {% endblock %}

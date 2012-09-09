@@ -205,6 +205,7 @@ div#content {
 <div class="left">
     <section id="current-post">
     <h2 id={{ post.pk }}>{{ post.title }}&nbsp;<span>by <a href="/accounts/users/{{ post.modified_by.username }}/">{{ post.modified_by.username }}</a></span></h2>
+    {% if post.is_secure %}<p>@# this article is more secure #@</p>{% endif %}
     <article>{{ body_html|wiki_ahref|safe }}</article>
     <br />
     <p class="tag">Tag: 
